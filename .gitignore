@@ -1,0 +1,8 @@
+__pycache__
+*.py[cod]
+videos/
+neural/result*
+result*
+neural/analysis_out/
+data/
+data*

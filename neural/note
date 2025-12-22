@@ -1,0 +1,11 @@
+env: scipy scikit-learn habitat habitat_baselines torch opencv-python frontier_exploration
+
+python -m neural.collect --episodes 100
+python -m neural.collect --episodes 100
+
+python -m neural.analyze --feature-key activations_hidden --threshold 0.2
+python -m neural.analyze --feature-key activations_rnn_output --threshold 0.2
+python -m neural.analyze --feature-key activations_visual_embed --threshold 0.2
+
+python -m neural.visualize
+
