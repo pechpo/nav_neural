@@ -1,0 +1,71 @@
+{
+  "data": "/home/pechpo/nav-r1/neural/result.npz",
+  "direction_names": [
+    "dir_0",
+    "dir_1",
+    "dir_2",
+    "dir_3",
+    "dir_4",
+    "dir_5",
+    "dir_6",
+    "dir_7",
+    "dir_8",
+    "dir_9",
+    "dir_10",
+    "dir_11"
+  ],
+  "feature_key": "activations_hidden",
+  "hidden_dim": 2048,
+  "invisible_dir_indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "lasso_alpha": 0.01,
+  "lasso_max_iter": 2000,
+  "lasso_tol": 0.0001,
+  "n_directions": 12,
+  "n_neurons": 2048,
+  "n_samples": 366018,
+  "npz_keys": [
+    "activations_hidden",
+    "activations_rnn_output",
+    "activations_visual_embed",
+    "distances",
+    "actions",
+    "poses",
+    "episode_ids"
+  ],
+  "rnn_num_layers": 4,
+  "rnn_output_dim": 512,
+  "screen_threshold": 0.2,
+  "screen_topk": 50,
+  "spearman_chunk_size": 256,
+  "target_key": "distances",
+  "visible_dir_indices": [
+    0,
+    1,
+    11
+  ],
+  "visible_dir_mask": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true
+  ],
+  "visual_embed_dim": 512
+}
