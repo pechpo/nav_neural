@@ -1,4 +1,5 @@
-# :dart: Download the HM3D Dataset
+# Nav-Neural: Research on Obstacle Detection Neurons in the PointNav Model
+## :dart: Download the HM3D Dataset
 
 ### HM3D scene dataset
 Please download the validation split of the HM3Dv2 scene data from https://github.com/matterport/habitat-matterport-3dresearch, files including:
