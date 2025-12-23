@@ -4,20 +4,27 @@
 **小组成员与分工**：
 
 * **彭程（组长）**：项目统筹；代码编写；做实验；报告撰写与可视化整理。
-* **[组员1姓名]**：
-* **[组员2姓名]**：
+* **[组员1姓名与分工]**：钟逸，负责理论架构设计；代码逻辑审计；学术综述与文献规范
+* **[组员2姓名与分工]**：
+* **[组员3姓名与分工]**：
 
 ## 1. 动机与背景
 
-2018 年发表在 *Nature* 的工作 *Vector-based navigation using grid-like representations in artificial agents* 展示了一个很打动人的现象：人工智能体在学习导航/路径积分时，内部会自发涌现出类似生物系统的“网格样”表征。这件事给我们的启发是——导航网络不一定只是“黑盒策略”，它里面可能真的存在可解释的空间信息组织方式。
+### 1.1 研究动机
+在系统与神经计算科学的研究范式中，空间导航不仅是一项复杂的行为任务，更是研究大脑如何编码外部世界的窗口。其中，大脑如何通过神经元放电从而构建出精确的空间度量，一直是该任务探索的核心问题。作为利用人工神经网络还原并模拟这一生物特性的关键切入点，**本研究的理论动机源于 Banino 等人在 2018 年发表于《Nature》的研究《Vector-based navigation using grid-like representations in artificial agents》[1]**。该研究通过构建基于长短期记忆网络（LSTM）的循环架构，模拟了生物脑处理运动学信号的过程；同时实验结果表明在执行路径积分任务时，模型内部会自发涌现出具有六边形周期性特征的类网格单元 ，而这一特性恰恰与哺乳动物内嗅皮层中支持空间导航的“网格细胞”高度相似。这一结论不仅揭示了网格细胞在空间导航中的计算逻辑，也证明了深度强化学习模型能够作为模拟空间认知的有效计算工具 。
 
-受此启发，我们试图在经典的 PointNav 模型中，讨论 agent 如何构建**自我中心（egocentric）**的空间感知？尤其是：
-- 视野内（眼睛看得到）的障碍物信息，当然可以来自 CNN；
-- 那些刚刚移出视野、或者在侧后方盲区的障碍物信息，网络是否会在 RNN 的隐状态中保留某种短时记忆（有点像“客体恒常性 / object permanence”）？
+本研究在此基础上，选取了基于**VLFM（Visual Language Frontier Maps）**预训练背景的**PointNav**模型作为研究对象 [2]。虽然 VLFM 的设计初衷是处理复杂的语义对象导航，但本研究将其应用场景收敛至点对点导航任务。这一选择旨在排除高层语义的干扰，从而能够更纯粹地观察模型在处理环境几何拓扑与障碍物规避时的表征逻辑。利用这一具备强大感知能力的模型，本研究试图探讨人工神经元如何在PointNav任务约束下演化出具有特定功能指向性的计算单元。
 
-我们选择了一个相对朴素但易解释的切入点：把“障碍物”拆成 **12 个方向上的最近障碍物距离**，然后用线性探针去问：这些距离在模型的哪些表示里是线性可读出的？
+### 1.2 相关工作
+为了深入挖掘模型内部的计算逻辑，本研究在理论框架上融合了多项跨学科的前沿成果。关于认知地图的构建逻辑，本研究参考了 **Whittington 等人 (2022)在《Nature Neuroscience》** 上的综述 [3]，该文献系统阐述了哺乳动物大脑皮层中的海马体-内嗅皮层系统如何利用结构化表征将空间经验转化为可泛化的规律，为理解模型在不同环境下保持导航一致性提供了坚实的理论基础。在解析特定神经元的功能属性时，本研究借鉴了 **Zhou 等人 (2018)《PNAS》** 上提出的网络单元功能解析思想 [4]，即神经网络内部的单个单元往往会演化为特定视觉概念的检测器。
 
----
+这一机制的普适性在 **Sorscher 等人 (2023)** 关于网格细胞起源的统一理论中得到了进一步验证：该研究指出，生物化表征的涌现并非偶然，而是特定网络结构在优化空间编码效率时的必然选择 [5]。这一理论为本研究在 VLFM 模型中搜寻避障特化单元提供了合法性依据，也就是说即使任务层级不同，底层的空间感知约束仍会驱动功能性神经元的产生。最后，在工程实现层面，**Tai 等人 (2017)** 证明了利用传感器信息进行端到端导航的有效性 [6]，而 **Fan 等人 (2020)** 关于分散式避障的研究则启发了本研究对模型在动态环境下决策一致性的分析逻辑 [7]。上述这些工作共同构成了本研究从理论基础到项目实践的完整科研链路。
+
+### 1.3 核心目标
+本研究的核心目标并不是简单地追求导航任务的成功率，而是利用统计学手段挖掘模型内部针对导航任务的避障机制。实验效仿神经科学中对特定功能神经元的搜寻逻辑，在模型运行过程中同步观测并采集隐层神经元的激活状态，同时在实验阶段引入了斯皮尔曼相关性分析与线性回归模型对神经元活动进行机制解析。
+
+更进一步说，实验过程旨在通过数据采样量化隐层神经元的激活状态与环境障碍物空间分布（如方位角、距离）之间的耦合程度并将其可视化，精准识别出在避障决策中起主导作用的神经元。在这一工作中，我们尝试将模型从感知到行动的复杂过程拆解开来，分析其内部处理机制，尤其关注模型内部是否形成了对空间障碍物等特定信息敏感的神经元。这不仅是对模型认知机制的一种追溯，也为我们理解更大规模、更复杂模型的内部工作原理，提供了一种具体的实证分析思路。
+
 
 ## 2. 实验设置与数据采集
 
@@ -175,3 +182,12 @@
 ## 6. 复现方式
 
 请参考 [复现流程](./Reproducible_Pipeline.md) 了解更多。
+
+## 参考文献 (References)
+* [1] Banino A, Barry C, Uria B, et al. Vector-based navigation using grid-like representations in artificial agents[J]. Nature, 2018, 557(7705): 429-433.
+* [2] Yokoyama N, Ha S, Batra D, et al. Vlfm: Vision-language frontier maps for zero-shot semantic navigation[C]//2024 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2024: 42-48.
+* [3] Whittington J C R, McCaffary D, Bakermans J J W, et al. How to build a cognitive map[J]. Nature neuroscience, 2022, 25(10): 1257-1272.
+* [4] Bau D, Zhou B, Khosla A, et al. Network dissection: Quantifying interpretability of deep visual representations[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. 2017: 6541-6549.
+* [5] Sorscher B, Mel G, Ganguli S, et al. A unified theory for the origin of grid cells through the lens of pattern formation[J]. Advances in neural information processing systems, 2019, 32.
+* [6] Tai L, Paolo G, Liu M. Virtual-to-real deep reinforcement learning: Continuous control of mobile robots for mapless navigation[C]//2017 IEEE/RSJ international conference on intelligent robots and systems (IROS). IEEE, 2017: 31-36.
+* [7] Fan T, Long P, Liu W, et al. Fully distributed multi-robot collision avoidance via deep reinforcement learning for safe and efficient navigation in complex scenarios[J]. arXiv preprint arXiv:1808.03841, 2018.
